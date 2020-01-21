@@ -1,0 +1,132 @@
+
+  <ion-segment color='primary'>
+    <ion-segment-button  (click)="switch('questionbox')">Fragen eingeben</ion-segment-button>
+    <ion-segment-button  (click)="switch('exambox')">Prüfen</ion-segment-button>
+    <ion-segment-button  (click)="switch('statistic')">Statistik</ion-segment-button>
+  </ion-segment>
+
+  <ion-grid [ngSwitch]="boxes">
+    <div *ngSwitchCase="'questionbox'">
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Frage eingeben</ion-label>
+            <ion-textarea [(ngModel)]="ques"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Antwort A/Lösung</ion-label>
+            <ion-input [(ngModel)]="ansA" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Antwort B</ion-label>
+            <ion-input [(ngModel)]="ansB" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Antwort C</ion-label>
+            <ion-input [(ngModel)]="ansC" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Antwort D</ion-label>
+            <ion-input [(ngModel)]="ansD" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-radio-group>
+        <ion-item (ionSelect)="radioSelect($event)">
+          <ion-label>Textfrage</ion-label>
+          <ion-radio name="text" value="text"></ion-radio>
+        </ion-item>
+        <ion-item (ionSelect)="radioSelect($event)">
+          <ion-label>Notenfrage</ion-label>
+          <ion-radio name="sheet" value="sheet"></ion-radio>
+        </ion-item>
+        <ion-item (ionSelect)="radioSelect($event)">
+          <ion-label>Mathefrage</ion-label>
+          <ion-radio name="math" value="math"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ion-button color="primary" expand="block" (click)="saveQuestion()">Speichern</ion-button>
+    </div>
+
+    <ion-row *ngSwitchCase="'exambox'">
+      <ion-slides #examslider scrollbar="true" [options]="slideOpts">
+        <ion-slide *ngFor="let question of questions">
+          <div *ngIf="question.type == 'text'">
+            <ion-textarea readonly="true">{{question.question}}</ion-textarea>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answera)">{{question.answera}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerb)">{{question.answerb}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerc)">{{question.answerc}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerd)">{{question.answerd}}
+            </ion-button>
+          </div>
+          <div *ngIf="question.type == 'sheet'" class="ion-margin-bottom">
+            <app-sheet [shValue]=question.question [DivId]=question.id></app-sheet>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answera)">{{question.answera}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerb)">{{question.answerb}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerc)">{{question.answerc}}
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerd)">{{question.answerd}}
+            </ion-button>
+          </div>
+          <div *ngIf="question.type == 'math'">
+            <ion-item>
+              <app-math [mathQuestion]=question.question></app-math>
+            </ion-item>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answera)">
+              <ng-katex [equation]='question.answera'></ng-katex>
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerb)">
+              <ng-katex [equation]='question.answerb'></ng-katex>
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerc)">
+              <ng-katex [equation]='question.answerc'></ng-katex>
+            </ion-button>
+            <ion-button
+                    (click)="checkQuestion(question.question, question.answerd)">
+              <ng-katex [equation]='question.answerd'></ng-katex>
+            </ion-button>
+
+          </div>
+
+        </ion-slide>
+        <ion-slide>
+          <h4>Statistik anschauen?</h4>
+          <ion-button (click)="sendToStatistic()">Statistik ansehen</ion-button>
+        </ion-slide>
+      </ion-slides>
+    </ion-row>
+
+
+    <app-statistics id="stat_component" ></app-statistics>
+
+
+
+  </ion-grid>

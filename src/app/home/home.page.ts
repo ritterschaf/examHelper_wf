@@ -6,7 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
+  public usejson: boolean;
+  public startupSwitch = true;
   constructor() {}
 
+  JSONchoice(choice) {
+    this.usejson = choice;
+    this.startupSwitch = false;
+  }
 }
+
